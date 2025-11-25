@@ -1,0 +1,14 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: rgb(29, 29, 29);
+    text-align: center
+};
+
+.button{
+    padding: 20%;
+    background-color: grey;
+    border: 2px solid black;
+    border-radius: 35%;
+};
