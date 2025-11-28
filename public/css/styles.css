@@ -4,11 +4,46 @@
     box-sizing: border-box;
     background-color: rgb(29, 29, 29);
     text-align: center
-};
+}
+.userBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+h1{
+    color: goldenrod;
+}
+/*  boton con margen interno de 20% y este separado del h1 por un 10vh. El fondo del boton debe ser negro y sus letras doradas. Incluir un "text-decoration: none"  y un border radius de un 30%*/
+.button {
+  padding: 5px;
+  margin-top: 10vh;
+}
 
-.button{
-    padding: 20%;
-    background-color: grey;
-    border: 2px solid black;
-    border-radius: 35%;
-};
+.button a {
+  color: gold;
+  text-decoration: none;
+  border-radius: 5%;
+}
+.button:hover{
+    padding: 8px;
+    border-radius: 8%;
+    transition: 0.3s ease-in-out;
+}
+/* estilos para la lista de productos */
+.listaProd{
+    color: white;
+    padding: 10px;
+    text-align: center;     
+    width: 50%;
+}
+.listaProd ul li{
+    list-style-type: none;
+    border: 1px solid grey;
+    width: fit-content;
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+}
+

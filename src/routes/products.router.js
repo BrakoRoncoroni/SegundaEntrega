@@ -18,9 +18,9 @@ const products = [
     },
     {
         id: uuidv4(),
-        name: "Teclado Korg Krome",
+        name: "Piano Steinway & Sons",
         category: "Instrumentos",
-        price: 1000,
+        price: 8000,
     },
     {
         id: uuidv4(),
@@ -36,23 +36,10 @@ const products = [
     },
     {
         id: uuidv4(),
-        name: "Micrófono Shure SM58",
+        name: "Micrófono Shure SM7b",
         category: "Accesorios",
         price: 100, 
     },
-    {
-        id: uuidv4(),
-        name: "Cables de audio Mogami Gold",
-        category: "Accesorios",
-        price: 80,  
-    },
-    {   
-        id: uuidv4(),
-        name: "Soporte para micrófono On-Stage Stands",
-        category: "Accesorios",
-        price: 40,  
-    }
-    
 ];
 
 router.get('/', (req, res) => {
@@ -106,3 +93,5 @@ router.delete('/:id', (req, res) => {
 
 
 module.exports = router;
+
+
