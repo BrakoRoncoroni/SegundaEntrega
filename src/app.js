@@ -17,20 +17,18 @@ app.engine(
   handlebars.engine({
     extname: ".hbs",
     defaultLayout: "main",
-    // layoutsDir: path.join(__dirname, "views/layouts"), codigo que esta comentado en el archivo de clase
-    // partialsDir: path.join(__dirname, "views/partials"), // codigo que esta comentado en el archivo de clase, no se entiende si se debe poner o no
   })
 );
 app.set("view engine", "hbs");
 app.set("views", paths.views);
-console.log("------>", paths.views); //Consologueo para probar si esta llegando correctamente el path;
+// console.log("------>", paths.views); //Consologueo para probar si esta llegando correctamente el path;
 
 //Configuracion para routes
 app.use("/api", routes);
 
 // Configuracion de carpeta public
 app.use("/public", express.static(paths.public));
-console.log("---------->", paths.public); //Consologueo para probar si esta llegando correctamente el path;
+// console.log("---------->", paths.public); //Consologueo para probar si esta llegando correctamente el path;
 
 //Configuracion de rutas
 app.get('/', (req, res) => {
@@ -76,12 +74,28 @@ const products = [
         price: 100, 
     },
 ]
+
 app.get("/products", (req, res) => {
-  const context = {
+try {
+    const context = {
     products,
   };
-  return res.render("pages/products", context);
+  return res.status(200).render("pages/products", context);
+} catch (error) {
+    return res.status(500).json({ error: "Error al cargar los productos" });
+}
 });
 
+app.get("/admin", (req, res)=>{
+  try {
+    // const context = {
+    //   title: "Panel Admin",
+    // };
+    return res.status(200).render("pages/admin")
+  } catch (error) {
+    console.error("Error: ", error)
+    return res.status(500).json({error: "Error al cargar sitio"})
+  }
+})
 
 module.exports = app;
