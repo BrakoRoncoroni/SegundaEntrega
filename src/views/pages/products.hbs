@@ -1,15 +1,23 @@
-<div class="userBody">
-    {{> header }}   
-    <div>
-        <h1>Lista de Productos</h1>
+{{!-- views/pages/products.hbs --}}
+<div class="products-container">
+    <h1>Instrumentum - Tu tienda de musica en linea</h1>
+    <h2>Lista de Productos</h2>
+    
+    <div class="products-grid">
+        {{#each products}}
+        <div class="product-card">
+            <img src="{{this.imagen}}" alt="{{this.nombre}}">
+            <h3>{{this.nombre}}</h3>
+            <p class="categoria">{{this.categoria}}</p>
+            <p class="descripcion">{{this.descripcion}}</p>
+            <p class="precio">${{this.precio}}</p>
+            <p class="stock">Stock: {{this.stock}}</p>
+            <button class="btn-comprar">Agregar al carrito</button>
+        </div>
+        {{else}}
+        <h2>No hay productos disponibles</h2>
+        {{/each}}
     </div>
-    <div class="listaProd">
-        <ul>
-            {{#each products}}
-            <li> {{name}} - {{category}} - ${{price}} </li>
-            {{/each}}
-        </ul>
-    </div>
+    
     {{> backhome}}
-    {{> footer}}
 </div>

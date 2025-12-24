@@ -2,36 +2,42 @@
 <div class="ofertas-container">
     <h1>🔥 Oferta del Momento 🔥</h1>
     
-    <div id="oferta-activa" style="display: none;">
-        <div class="producto-oferta">
-            <img id="producto-imagen" src="" alt="Producto">
-            <h2 id="producto-nombre"></h2>
-            <div class="precios">
-                <span class="precio-original" id="precio-original"></span>
-                <span class="precio-oferta" id="precio-oferta"></span>
-                <span class="descuento" id="descuento"></span>
-            </div>
-            
-            <div class="contador">
-                <h3>⏰ Tiempo restante:</h3>
-                <div id="tiempo-restante" class="tiempo-display">
-                    <span id="minutos">00</span>:<span id="segundos">00</span>
+    {{#if ofertaActiva}}
+        <div id="oferta-activa">
+            <div class="producto-oferta">
+                <img src="{{ofertaActiva.producto.imagen}}" alt="{{ofertaActiva.producto.nombre}}">
+                <h2>{{ofertaActiva.producto.nombre}}</h2>
+                <div class="precios">
+                    <span class="precio-original">${{ofertaActiva.producto.precioOriginal}}</span>
+                    <span class="precio-oferta">${{ofertaActiva.precioOferta}}</span>
+                    <span class="descuento">{{ofertaActiva.descuento}}% OFF</span>
                 </div>
+                
+                <div class="contador">
+                    <h3>⏰ Tiempo restante:</h3>
+                    <div id="tiempo-restante" class="tiempo-display" 
+                         data-fin="{{ofertaActiva.fechaFin}}">
+                        <span id="minutos">00</span>:<span id="segundos">00</span>
+                    </div>
+                </div>
+                
+                <button class="btn-comprar" 
+                        data-producto-id="{{ofertaActiva.producto._id}}">
+                    Comprar Ahora
+                </button>
             </div>
-            
-            <button id="btn-comprar" class="btn-comprar">Comprar Ahora</button>
         </div>
-    </div>
+    {{else}}
+        <div id="sin-oferta">
+            <div class="esperando-oferta">
+                <h2>⏳ Espera la próxima oferta</h2>
+                <p>¡Pronto habrá una nueva oferta increíble!</p>
+                <div class="loader"></div>
+            </div>
+        </div>
+    {{/if}}
     
-    <div id="sin-oferta" style="display: block;">
-        <div class="esperando-oferta">
-            <h2>⏳ Espera la próxima oferta</h2>
-            <p>¡Pronto habrá una nueva oferta increíble!</p>
-            <div class="loader"></div>
-        </div>
-    </div>
-        {{> backhome}}
-
+    {{> backhome}}
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

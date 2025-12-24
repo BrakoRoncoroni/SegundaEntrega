@@ -1,15 +1,166 @@
-
-<div class="admin">
-     <h1>Bienvenido al panel de Administrador</h1>
-
-    <div class="adminLogin">
-            <h2>Inicie sesion para continuar</h2>
-        <input type="text" name="User" placeholder="Usuario">
-        <input type="password" name="Password" placeholder="Contraseña">
-        <button class="button">Iniciar Sesion</button>
+<div class="admin-container">
+    <h1>Panel de Administración</h1>
+    
+    {{!-- Sección: Crear Producto --}}
+    <div class="admin-section">
+        <h2>Crear Nuevo Producto</h2>
+        <form id="form-nuevo-producto" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Categoría:</label>
+                <select name="categoria" required>
+                    <option value="">Selecciona categoría</option>
+                    <option value="Instrumentos">Instrumentos</option>
+                    <option value="Accesorios">Accesorios</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Precio:</label>
+                <input type="number" name="precio" min="0" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Descripción:</label>
+                <textarea name="descripcion" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Imagen del Producto:</label>
+                <input type="file" name="imagen" accept="image/*" id="input-imagen" required>
+                <div id="preview-container" style="margin-top: 10px; display: none;">
+                    <img id="preview-imagen" src="" alt="Preview" style="max-width: 200px; border-radius: 8px;">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Stock:</label>
+                <input type="number" name="stock" min="0" value="0">
+            </div>
+            
+            <button type="submit" class="btn-crear">Crear Producto</button>
+        </form>
     </div>
-        {{> backhome}}
-        {{> footer}}
+    
+    {{!-- Sección: Lista de Productos --}}
+    <div class="admin-section">
+        <h2>Productos Existentes</h2>
+        <table class="productos-tabla">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each productos}}
+                <tr data-id="{{this._id}}">
+                    <td><img src="{{this.imagen}}" alt="{{this.nombre}}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                    <td>{{this.nombre}}</td>
+                    <td>{{this.categoria}}</td>
+                    <td>${{this.precio}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>
+                        {{#if this.activo}}
+                        <span class="badge activo">Activo</span>
+                        {{else}}
+                        <span class="badge inactivo">Inactivo</span>
+                        {{/if}}
+                    </td>
+                    <td>
+                        <button class="btn-editar" data-id="{{this._id}}">Editar</button>
+                        <button class="btn-eliminar" data-id="{{this._id}}">Eliminar</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    
+    {{> backhome}}
 </div>
 
 
+<script>
+// Preview de imagen antes de subir
+document.getElementById('input-imagen').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-imagen').src = e.target.result;
+            document.getElementById('preview-container').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Crear nuevo producto con imagen
+document.getElementById('form-nuevo-producto').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    
+    try {
+        const res = await fetch('/productos/admin/crear', {
+            method: 'POST',
+            body: formData // NO poner Content-Type, fetch lo hace automáticamente
+        });
+        
+        const result = await res.json();
+        
+        if (result.success) {
+            alert('✅ Producto creado exitosamente');
+            location.reload();
+        } else {
+            alert('❌ Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('❌ Error al crear producto');
+        console.error(error);
+    }
+});
+
+// Eliminar producto
+document.querySelectorAll('.btn-eliminar').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        if (!confirm('¿Eliminar este producto?')) return;
+        
+        const id = btn.dataset.id;
+        
+        try {
+            const res = await fetch(`/productos/admin/eliminar/${id}`, {
+                method: 'DELETE'
+            });
+            
+            const result = await res.json();
+            
+            if (result.success) {
+                alert('✅ Producto eliminado');
+                location.reload();
+            } else {
+                alert('❌ Error: ' + result.error);
+            }
+        } catch (error) {
+            alert('❌ Error al eliminar producto');
+            console.error(error);
+        }
+    });
+});
+
+// Editar producto (simplificado - solo alerta por ahora)
+document.querySelectorAll('.btn-editar').forEach(btn => {
+    btn.addEventListener('click', () => {
+        alert('Funcionalidad de edición - próximamente');
+    });
+});
+</script>

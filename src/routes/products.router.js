@@ -1,98 +1,142 @@
 const express = require('express');
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
+const Producto = require('../models/Producto');
+const upload = require('../config/multer');
 
-// productos de la tienda 
-// const products = [
-//     {
-//         id: uuidv4(),
-//         name: "Guitarra Fender Stratocaster",
-//         category: "Instrumentos",
-//         price: 1200,
-//     },
-//     {
-//         id: uuidv4(),
-//         name: "Batería Yamaha Stage Custom",
-//         category: "Instrumentos",
-//         price: 1500,
-//     },
-//     {
-//         id: uuidv4(),
-//         name: "Piano Steinway & Sons",
-//         category: "Instrumentos",
-//         price: 8000,
-//     },
-//     {
-//         id: uuidv4(),
-//         name: "Amplificador Marshall MG15CF",
-//         category: "Instrumentos",
-//         price: 300,
-//     },
-//     {
-//         id: uuidv4(),
-//         name: "Audífonos Audio-Technica ATH-M50x",
-//         category: "Accesorios",
-//         price: 150,     
-//     },
-//     {
-//         id: uuidv4(),
-//         name: "Micrófono Shure SM7b",
-//         category: "Accesorios",
-//         price: 100, 
-//     },
-// ];
-
-
-router.get('/', (req, res) => {
-    res.status(200).json(products);
-});
-
-router.get('/:id', (req, res) => {
+// Crear nuevo producto desde el panel admin CON IMAGEN
+router.post('/admin/crear', upload.single('imagen'), async (req, res) => {
     try {
-            const { id } = req.params;
-    const product = products.find(p => p.id === id);
-    if (product) {
-        res.status(200).json(product);
-    } else {
-        res.status(404).json({ message: 'Producto no encontrado' });
-    }
+        const { nombre, categoria, precio, descripcion, stock } = req.body;
+        
+        // Si se subió una imagen, usar su ruta; si no, usar imagen por defecto
+        const imagenPath = req.file 
+            ? `/public/uploads/${req.file.filename}` 
+            : '/public/img/default.jpg';
+        
+        const nuevoProducto = new Producto({
+            nombre,
+            categoria,
+            precio,
+            descripcion: descripcion || '',
+            imagen: imagenPath,
+            stock: stock || 0,
+            activo: true
+        });
+        
+        await nuevoProducto.save();
+        
+        res.json({ 
+            success: true, 
+            mensaje: 'Producto creado exitosamente',
+            producto: nuevoProducto
+        });
     } catch (error) {
-     res.status(500).json({ message: 'Error al obtener el producto' });   
+        console.error('Error al crear producto:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
     }
 });
 
-router.post('/', (req, res) => {
+// Actualizar producto CON IMAGEN
+router.put('/admin/editar/:id', upload.single('imagen'), async (req, res) => {
     try {
-        const { name, category, price } = req.body;
-    const newProduct = {
-        id: uuidv4(),
-        name,
-        category,
-        price,
-    };
-    products.push(newProduct);
-    res.status(201).json(newProduct);
+        const { nombre, categoria, precio, descripcion, stock } = req.body;
+        
+        // Preparar datos a actualizar
+        const datosActualizar = {
+            nombre,
+            categoria,
+            precio,
+            descripcion,
+            stock
+        };
+        
+        // Si se subió una nueva imagen, actualizar la ruta
+        if (req.file) {
+            datosActualizar.imagen = `/public/uploads/${req.file.filename}`;
+        }
+        
+        const productoActualizado = await Producto.findByIdAndUpdate(
+            req.params.id,
+            datosActualizar,
+            { new: true }
+        );
+        
+        if (!productoActualizado) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Producto no encontrado' 
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            mensaje: 'Producto actualizado',
+            producto: productoActualizado
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear el producto' });
+        console.error('Error al actualizar producto:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
     }
 });
 
-router.delete('/:id', (req, res) => {
+// Eliminar producto (desactivar)
+router.delete('/admin/eliminar/:id', async (req, res) => {
     try {
-        const { id } = req.params;  
-    const index = products.findIndex(p => p.id === id);
-    if (index !== -1) {
-        products.splice(index, 1);
-        res.status(200).json({ message: 'Producto eliminado correctamente' });
-    } else {
-        res.status(404).json({ message: 'Producto no encontrado' });
-    }
+        const producto = await Producto.findByIdAndUpdate(
+            req.params.id,
+            { activo: false },
+            { new: true }
+        );
+        
+        if (!producto) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Producto no encontrado' 
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            mensaje: 'Producto eliminado'
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error al eliminar el producto' });
+        console.error('Error al eliminar producto:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
     }
 });
 
+// Obtener un producto por ID
+router.get('/:id', async (req, res) => {
+    try {
+        const producto = await Producto.findById(req.params.id);
+        
+        if (!producto) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Producto no encontrado' 
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            producto 
+        });
+    } catch (error) {
+        console.error('Error al obtener producto:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+});
 
 module.exports = router;
-
-
