@@ -2,45 +2,46 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
-//productos de una tienda de musica
-const products = [
-    {
-        id: uuidv4(),
-        name: "Guitarra Fender Stratocaster",
-        category: "Instrumentos",
-        price: 1200,
-    },
-    {
-        id: uuidv4(),
-        name: "Batería Yamaha Stage Custom",
-        category: "Instrumentos",
-        price: 1500,
-    },
-    {
-        id: uuidv4(),
-        name: "Piano Steinway & Sons",
-        category: "Instrumentos",
-        price: 8000,
-    },
-    {
-        id: uuidv4(),
-        name: "Amplificador Marshall MG15CF",
-        category: "Instrumentos",
-        price: 300,
-    },
-    {
-        id: uuidv4(),
-        name: "Audífonos Audio-Technica ATH-M50x",
-        category: "Accesorios",
-        price: 150,     
-    },
-    {
-        id: uuidv4(),
-        name: "Micrófono Shure SM7b",
-        category: "Accesorios",
-        price: 100, 
-    },
-];
+// productos de la tienda 
+// const products = [
+//     {
+//         id: uuidv4(),
+//         name: "Guitarra Fender Stratocaster",
+//         category: "Instrumentos",
+//         price: 1200,
+//     },
+//     {
+//         id: uuidv4(),
+//         name: "Batería Yamaha Stage Custom",
+//         category: "Instrumentos",
+//         price: 1500,
+//     },
+//     {
+//         id: uuidv4(),
+//         name: "Piano Steinway & Sons",
+//         category: "Instrumentos",
+//         price: 8000,
+//     },
+//     {
+//         id: uuidv4(),
+//         name: "Amplificador Marshall MG15CF",
+//         category: "Instrumentos",
+//         price: 300,
+//     },
+//     {
+//         id: uuidv4(),
+//         name: "Audífonos Audio-Technica ATH-M50x",
+//         category: "Accesorios",
+//         price: 150,     
+//     },
+//     {
+//         id: uuidv4(),
+//         name: "Micrófono Shure SM7b",
+//         category: "Accesorios",
+//         price: 100, 
+//     },
+// ];
+
 
 router.get('/', (req, res) => {
     res.status(200).json(products);

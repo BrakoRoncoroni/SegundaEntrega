@@ -23,14 +23,14 @@ app.set("view engine", "hbs");
 app.set("views", paths.views);
 // console.log("------>", paths.views); //Consologueo para probar si esta llegando correctamente el path;
 
-//Configuracion para routes
+//Configuracion para que funcionen las routes de la carpeta router
 app.use("/api", routes);
 
 // Configuracion de carpeta public
 app.use("/public", express.static(paths.public));
 // console.log("---------->", paths.public); //Consologueo para probar si esta llegando correctamente el path;
 
-//Configuracion de rutas
+//Configuracion de rutas-----------------------------------------------
 app.get('/', (req, res) => {
  return res.render("pages/home", {})
 }); 
@@ -74,7 +74,8 @@ const products = [
         price: 100, 
     },
 ]
-
+console.log(products);
+//middleware products
 app.get("/products", (req, res) => {
 try {
     const context = {
@@ -86,6 +87,7 @@ try {
 }
 });
 
+//middleware admin
 app.get("/admin", (req, res)=>{
   try {
     // const context = {
@@ -94,8 +96,37 @@ app.get("/admin", (req, res)=>{
     return res.status(200).render("pages/admin")
   } catch (error) {
     console.error("Error: ", error)
-    return res.status(500).json({error: "Error al cargar sitio"})
+    return res.status(500).render("pages/error")
   }
 })
 
+//middleware carrito
+app.get("/cart", (req, res)=>{
+  try {
+    return res.status(200).render("pages/cart")
+  } catch (error) {
+    console.error("Error: ", error)
+    return res.status(500).render("pages/error")
+  };
+})
+
+//middleware error
+app.get("/error", (req, res)=>{
+  try {
+    return res.status(200).render("pages/error")
+  } catch (error) {
+    console.error("Error: ", error)
+    return res.status(500).render("pages/error")
+  }
+})
+
+//middleware ofertas
+app.get("/ofertas", (req, res) => {
+  try {
+    return res.status(200).render("pages/ofertas")
+  } catch (error) {
+    console.error("Error: ", error)
+    return res.status(500).render("pages/error")
+  }
+})
 module.exports = app;

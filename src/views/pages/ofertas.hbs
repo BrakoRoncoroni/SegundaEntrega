@@ -1,0 +1,38 @@
+{{!-- views/pages/ofertas.hbs --}}
+<div class="ofertas-container">
+    <h1>🔥 Oferta del Momento 🔥</h1>
+    
+    <div id="oferta-activa" style="display: none;">
+        <div class="producto-oferta">
+            <img id="producto-imagen" src="" alt="Producto">
+            <h2 id="producto-nombre"></h2>
+            <div class="precios">
+                <span class="precio-original" id="precio-original"></span>
+                <span class="precio-oferta" id="precio-oferta"></span>
+                <span class="descuento" id="descuento"></span>
+            </div>
+            
+            <div class="contador">
+                <h3>⏰ Tiempo restante:</h3>
+                <div id="tiempo-restante" class="tiempo-display">
+                    <span id="minutos">00</span>:<span id="segundos">00</span>
+                </div>
+            </div>
+            
+            <button id="btn-comprar" class="btn-comprar">Comprar Ahora</button>
+        </div>
+    </div>
+    
+    <div id="sin-oferta" style="display: block;">
+        <div class="esperando-oferta">
+            <h2>⏳ Espera la próxima oferta</h2>
+            <p>¡Pronto habrá una nueva oferta increíble!</p>
+            <div class="loader"></div>
+        </div>
+    </div>
+        {{> backhome}}
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/public/js/ofertas.js"></script>
